@@ -2,7 +2,7 @@
 <html lang="hu">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>VENOM Barbershop — Férfi fodrászat, Szeged</title>
 <meta name="description" content="VENOM Barbershop — férfi fodrászat Szegeden. Éles fade-ek, precíz szakállformázás, klasszikus borotválás. Kizárólag időpontfoglalással.">
 <meta name="theme-color" content="#050609">
@@ -389,24 +389,23 @@
   .mobile-cta{display:none;}
   @media(max-width:819.98px){
     .grain{mix-blend-mode:normal;opacity:.05;} /* mobilon a blend-mód GPU-terhét elhagyjuk */
-    /* Alul rögzített, FIX 52px sáv — SÖTÉT háttérrel. Az iOS Safari félig átlátszó alsó
-       címsávja a mögötte lévő színt veszi át: zöld háttérnél zöldre mosódott (ezért tűnt
-       óriásinak), sötétnél beleolvad az oldalba. A zöld csak a feliraté. */
+    /* ZÖLD gomb SÖTÉT tálcában. A Safari alsó sávja a képernyő LEGALSÓ pixeleiből
+       veszi a színét — ezért a zöld sosem érhet az aljáig: alatta mindig sötét sáv van.
+       Így a Safari sötét marad, a zöld gomb pedig fixen ott ragad. */
     .mobile-cta{
-      display:flex;position:fixed;left:0;right:0;bottom:0;z-index:70;
-      height:52px;background:rgba(7,9,13,.96);
-      border-top:1px solid rgba(158,240,26,.45);
-      box-shadow:0 -6px 20px rgba(0,0,0,.45);
+      display:block;position:fixed;left:0;right:0;bottom:0;z-index:70;
+      padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px)); /* a ráadás csak SÖTÉT lehet */
+      background:rgba(5,6,9,.97);border-top:1px solid var(--line);
       transform:translateY(100%);transition:transform .32s cubic-bezier(.22,.9,.3,1);
     }
     .mobile-cta.show{transform:none;} /* csak akkor úszik be, ha se a hero, se a foglalás gombja nem látszik */
     .mobile-cta a{
-      flex:1;display:flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;
+      display:flex;height:44px;align-items:center;justify-content:center;text-decoration:none;
+      border-radius:10px;background:var(--venom);color:#0A1200;
       font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15.5px;
       letter-spacing:.14em;text-transform:uppercase;
+      box-shadow:0 4px 16px rgba(158,240,26,.25);
     }
-    .mobile-cta .m-primary{background:transparent;color:var(--venom);}
-    .mobile-cta .m-primary::after{content:"›";font-size:19px;line-height:1;transform:translateY(-1px);}
   }
   @media(max-width:480px){
     .subbrand{letter-spacing:.18em;gap:10px;}
