@@ -33,7 +33,7 @@
     --teal-glow:rgba(47,208,208,.45);
     --text:#C3C9D2;
     --text-dim:rgba(195,201,210,.72);
-    --cta-h:64px;           /* ragadós mobil CTA-sáv magassága */
+    --cta-h:54px;           /* ragadós mobil CTA-sáv magassága */
     --bar-h:75px;           /* rögzített fejléc magassága */
   }
   *{box-sizing:border-box;margin:0;padding:0;}
@@ -393,9 +393,12 @@
       min-height:var(--cta-h);padding-bottom:env(safe-area-inset-bottom);
       background:var(--panel);border-top:1px solid rgba(158,240,26,.3);
       box-shadow:0 -8px 24px rgba(0,0,0,.5);
+      transform:translateY(120%);transition:transform .32s cubic-bezier(.22,.9,.3,1);
     }
+    .mobile-cta.show{transform:none;} /* csak akkor úszik be, ha a hero gomb kigördült */
     .mobile-cta a{
-      flex:1;text-align:center;padding:15px 8px;text-decoration:none;
+      flex:1;text-align:center;padding:12px 8px;text-decoration:none;
+      display:flex;align-items:center;justify-content:center;
       font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;
       letter-spacing:.1em;text-transform:uppercase;
     }
@@ -432,6 +435,7 @@
     .brand::before{animation:none;}
     .lightbox,.lb-img,.slot .zoom-cue{transition:none;}
     .lb-img{transform:none;}
+    .mobile-cta{transition:none;}
     .hero-glow,.ticker-track,h1.title::after,.venom-face{animation:none;}
     .slot img{transition:none;}
     .card:hover{transform:none;}
@@ -683,6 +687,16 @@
     new IntersectionObserver(function(es){
       brand.classList.toggle('show', !es[es.length-1].isIntersecting); // mindig a legfrissebb állapot
     },{rootMargin:'-80px 0px 0px 0px'}).observe(bigLogo);
+  })();
+
+  /* Ragadós mobil CTA: csak akkor ússzon be, ha a hero „Időpontot foglalok" gombja kigördült */
+  (function(){
+    const cta=document.querySelector('.mobile-cta');
+    const heroCtas=document.querySelector('.hero .ctas');
+    if(!cta||!heroCtas) return;
+    new IntersectionObserver(function(es){
+      cta.classList.toggle('show', !es[es.length-1].isIntersecting);
+    },{rootMargin:'0px 0px -10px 0px'}).observe(heroCtas);
   })();
 
   /* Galéria lightbox: kattintásra nagy nézet, nyilakkal lapozható */
