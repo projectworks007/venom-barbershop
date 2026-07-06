@@ -436,7 +436,7 @@
     .lightbox,.lb-img,.slot .zoom-cue{transition:none;}
     .lb-img{transform:none;}
     .mobile-cta{transition:none;}
-    .hero-glow,.ticker-track,h1.title::after,.venom-face{animation:none;}
+    .hero-glow,.ticker-track,h1.title::after,.hero .venom-face{animation:none;}
     .slot img{transition:none;}
     .card:hover{transform:none;}
     .slot:hover img{transform:none;}
@@ -696,6 +696,24 @@
     new IntersectionObserver(function(es){
       brand.classList.toggle('show', !es[es.length-1].isIntersecting); // mindig a legfrissebb állapot
     },{rootMargin:'-80px 0px 0px 0px'}).observe(bigLogo);
+  })();
+
+  /* Venom-arc újravillanása: valahányszor visszatérsz a hero tetejére, újraindul a reveal */
+  (function(){
+    const face=document.querySelector('.venom-face');
+    const hero=document.querySelector('.hero');
+    if(!face||!hero) return;
+    const reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
+    let first=true;
+    function replay(){
+      if(reduce.matches) return;
+      face.style.animation='none'; void face.offsetWidth; face.style.animation=''; // CSS-animáció újraindítása
+    }
+    new IntersectionObserver(function(es){
+      const visible=es[es.length-1].isIntersecting;
+      if(first){ first=false; return; }   // a betöltéskori villanást a CSS intézi
+      if(visible) replay();
+    },{threshold:.4}).observe(hero);
   })();
 
   /* Ragadós mobil CTA: csak akkor látszik, ha SE a hero gomb, SE a foglalás-szekció gombja
