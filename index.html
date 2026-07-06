@@ -164,11 +164,17 @@
     mask-image:linear-gradient(180deg,#000 78%,transparent 100%); /* alul lágyan elhal, nem ér a szövegbe */
     animation:venomReveal 2.8s cubic-bezier(.22,.9,.3,1) .2s both; /* betöltéskor felvillan, majd beépül */
   }
-  @keyframes venomReveal{
+  @keyframes venomReveal{ /* BETÖLTÉSKOR: semmiből tűnik elő, felvillan, beépül */
     0%{opacity:0;transform:translate(-50%,-50%) scale(1.07);}
     16%{opacity:.92;}
     100%{opacity:.28;transform:translate(-50%,-50%) scale(1);}
   }
+  @keyframes venomFlash{ /* VISSZATÉRÉSKOR: a nyugalmi 0.28-ról villan fel, majd vissza — nem tűnik el */
+    0%{opacity:.28;transform:translate(-50%,-50%) scale(1);}
+    28%{opacity:.9;transform:translate(-50%,-50%) scale(1.03);}
+    100%{opacity:.28;transform:translate(-50%,-50%) scale(1);}
+  }
+  .hero .venom-face.flash{animation:venomFlash 2.4s ease-in-out both;}
   .hero > *{position:relative;z-index:2;}
   .emblem{width:clamp(190px,32vw,290px);height:clamp(190px,32vw,290px);margin:0 auto 16px;position:relative;}
   .emblem img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 0 34px rgba(47,208,208,.48)) drop-shadow(0 0 12px rgba(158,240,26,.12));}
@@ -708,7 +714,7 @@
     const reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
     function faceReplay(){
       if(!face||reduce.matches) return;
-      face.style.animation='none'; void face.offsetWidth; face.style.animation='';
+      face.classList.remove('flash'); void face.offsetWidth; face.classList.add('flash'); // 0.28-ról villan, nem 0-ról
     }
     function shine(){
       if(!title||reduce.matches) return;
