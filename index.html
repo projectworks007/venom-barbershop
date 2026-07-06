@@ -162,14 +162,8 @@
     mix-blend-mode:screen; /* a kép fekete háttere beleolvad az oldal feketéjébe */
     -webkit-mask-image:linear-gradient(180deg,#000 78%,transparent 100%);
     mask-image:linear-gradient(180deg,#000 78%,transparent 100%); /* alul lágyan elhal, nem ér a szövegbe */
-    animation:venomReveal 2.8s cubic-bezier(.22,.9,.3,1) .2s both; /* betöltéskor felvillan, majd beépül */
-  }
-  @keyframes venomReveal{ /* BETÖLTÉSKOR: semmiből tűnik elő, felvillan, beépül */
-    0%{opacity:0;transform:translate(-50%,-50%) scale(1.07);}
-    16%{opacity:.92;}
-    100%{opacity:.28;transform:translate(-50%,-50%) scale(1);}
-  }
-  @keyframes venomFlash{ /* VISSZATÉRÉSKOR: a nyugalmi 0.28-ról villan fel, majd vissza — nem tűnik el */
+  } /* nyugalmi állapot: halványan (0.28) mindig ott van, sosem tűnik el */
+  @keyframes venomFlash{ /* BETÖLTÉSKOR és VISSZATÉRÉSKOR: a nyugalmi 0.28-ról villan fel, majd vissza */
     0%{opacity:.28;transform:translate(-50%,-50%) scale(1);}
     28%{opacity:.9;transform:translate(-50%,-50%) scale(1.03);}
     100%{opacity:.28;transform:translate(-50%,-50%) scale(1);}
@@ -720,7 +714,7 @@
       if(!title||reduce.matches) return;
       title.classList.remove('shine'); void title.offsetWidth; title.classList.add('shine');
     }
-    shine();                       // kezdeti csillanás (az arcot betöltéskor a CSS intézi)
+    faceReplay(); shine();         // betöltéskor: arc felvillan (0.28-ról) + felirat megcsillan
     let wasAway=false;             // elmentél-e a tetejéről, mióta legutóbb ott voltál
     window.addEventListener('scroll',function(){
       const y=window.scrollY||document.documentElement.scrollTop||0;
