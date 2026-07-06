@@ -698,14 +698,23 @@
     },{rootMargin:'-80px 0px 0px 0px'}).observe(bigLogo);
   })();
 
-  /* Ragadós mobil CTA: csak akkor ússzon be, ha a hero „Időpontot foglalok" gombja kigördült */
+  /* Ragadós mobil CTA: csak akkor látszik, ha SE a hero gomb, SE a foglalás-szekció gombja
+     nincs a képen (két valódi „Foglalj időpontot" gomb közé nem kell a ragadós sáv). */
   (function(){
     const cta=document.querySelector('.mobile-cta');
     const heroCtas=document.querySelector('.hero .ctas');
+    const bookBtn=document.querySelector('.book-box .btn-venom');
     if(!cta||!heroCtas) return;
+    let heroVisible=true, bookVisible=false;
+    const update=()=>cta.classList.toggle('show', !heroVisible && !bookVisible);
     new IntersectionObserver(function(es){
-      cta.classList.toggle('show', !es[es.length-1].isIntersecting);
+      heroVisible=es[es.length-1].isIntersecting; update();
     },{rootMargin:'0px 0px -10px 0px'}).observe(heroCtas);
+    if(bookBtn){
+      new IntersectionObserver(function(es){
+        bookVisible=es[es.length-1].isIntersecting; update();
+      },{rootMargin:'0px 0px -10px 0px'}).observe(bookBtn);
+    }
   })();
 
   /* Galéria lightbox: kattintásra nagy nézet, nyilakkal lapozható */
