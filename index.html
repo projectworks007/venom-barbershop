@@ -194,9 +194,10 @@
     content:"VENOM";position:absolute;inset:0;
     background:linear-gradient(105deg,transparent 38%,rgba(196,248,250,.9) 50%,transparent 62%);
     -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
-    background-size:250% 100%;animation:shine 6s linear infinite;
+    background-size:250% 100%;background-position:180% 0; /* alap: a fény-csík a képen kívül */
   }
-  @keyframes shine{0%{background-position:180% 0;}55%,100%{background-position:-80% 0;}}
+  h1.title.shine::after{animation:shine 1.5s cubic-bezier(.3,.7,.4,1) both;} /* egy csillanás betöltéskor + minden visszatéréskor */
+  @keyframes shine{from{background-position:180% 0;}to{background-position:-80% 0;}}
   .subbrand{
     display:inline-flex;align-items:center;gap:18px;margin:18px 0 26px;
     font-family:'Barlow Condensed',sans-serif;font-weight:700;
@@ -698,21 +699,28 @@
     },{rootMargin:'-80px 0px 0px 0px'}).observe(bigLogo);
   })();
 
-  /* Venom-arc újravillanása: valahányszor visszatérsz a hero tetejére, újraindul a reveal */
+  /* Hero-effektek újrajátszása: valahányszor visszatérsz a tetejére, újravillan az arc
+     ÉS végigfut a fém-csillanás a VENOM feliraton (betöltéskor + minden visszatéréskor). */
   (function(){
     const face=document.querySelector('.venom-face');
+    const title=document.querySelector('.hero .title');
     const hero=document.querySelector('.hero');
-    if(!face||!hero) return;
+    if(!hero) return;
     const reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
-    let first=true;
-    function replay(){
-      if(reduce.matches) return;
-      face.style.animation='none'; void face.offsetWidth; face.style.animation=''; // CSS-animáció újraindítása
+    function faceReplay(){
+      if(!face||reduce.matches) return;
+      face.style.animation='none'; void face.offsetWidth; face.style.animation='';
     }
+    function shine(){
+      if(!title||reduce.matches) return;
+      title.classList.remove('shine'); void title.offsetWidth; title.classList.add('shine');
+    }
+    shine();                              // kezdeti csillanás (az arcot betöltéskor a CSS intézi)
+    let first=true;
     new IntersectionObserver(function(es){
       const visible=es[es.length-1].isIntersecting;
-      if(first){ first=false; return; }   // a betöltéskori villanást a CSS intézi
-      if(visible) replay();
+      if(first){ first=false; return; }   // a betöltéskori arc-villanást a CSS intézi
+      if(visible){ faceReplay(); shine(); }
     },{threshold:.4}).observe(hero);
   })();
 
