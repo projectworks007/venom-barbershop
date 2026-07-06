@@ -95,7 +95,7 @@
     content:"";position:absolute;left:50%;top:50%;width:92px;height:92px;
     transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;
     background:radial-gradient(circle, rgba(47,208,208,.55), rgba(158,240,26,.20) 52%, transparent 72%);
-    animation:brandPulse 3.6s ease-in-out infinite;
+    animation:brandPulse 2.8s ease-in-out infinite;
   }
   @keyframes brandPulse{
     0%,100%{transform:translate(-50%,-50%) scale(.78);opacity:.45;}
@@ -669,6 +669,15 @@
 </div>
 
 <script>
+  /* Frissítéskor MINDIG a tetejéről (a hero) induljon — ne a böngésző pozíció-memóriája,
+     és ne egy menüből ottmaradt #horgony döntsön. */
+  if('scrollRestoration' in history) history.scrollRestoration='manual';
+  (function(){
+    if(location.hash){ history.replaceState(null,'',location.pathname+location.search); }
+    window.scrollTo(0,0);
+  })();
+  window.addEventListener('load',function(){ window.scrollTo(0,0); });
+
   document.querySelectorAll('.slot img, .emblem img').forEach(img=>{
     const holder=img.closest('.slot')||img.closest('.emblem');
     img.addEventListener('error',()=>holder.classList.add('empty'));
