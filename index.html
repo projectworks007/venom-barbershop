@@ -33,7 +33,7 @@
     --teal-glow:rgba(47,208,208,.45);
     --text:#C3C9D2;
     --text-dim:rgba(195,201,210,.72);
-    --cta-h:46px;           /* ragadós mobil CTA-sáv magassága */
+    --cta-h:61px;           /* ragadós mobil CTA-tálca magassága (8+44+8 + szegély) */
     --bar-h:75px;           /* rögzített fejléc magassága */
   }
   *{box-sizing:border-box;margin:0;padding:0;}
@@ -77,6 +77,8 @@
     position:fixed;top:0;left:0;right:0;z-index:70;
     display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
     min-height:var(--bar-h);padding:11px 26px;background:rgba(7,9,13,.94);
+    padding-left:max(26px,env(safe-area-inset-left,0px));   /* fekvő iPhone: notch alá ne lógjon */
+    padding-right:max(26px,env(safe-area-inset-right,0px));
     border-bottom:1px solid var(--line);
     transform:translateZ(0);will-change:transform; /* saját GPU-réteg: görgetésnél sem tűnhet el */
   }
@@ -143,7 +145,10 @@
 
   /* ---------- Hero ---------- */
   .hero{
-    position:relative;min-height:calc(100svh - var(--bar-h));display:flex;flex-direction:column;
+    position:relative;
+    min-height:calc(100vh - var(--bar-h));  /* fallback régi böngészőknek */
+    min-height:calc(100svh - var(--bar-h));
+    display:flex;flex-direction:column;
     align-items:center;justify-content:center;text-align:center;
     padding:90px 22px 70px;overflow:hidden;
   }
@@ -191,7 +196,9 @@
     background-size:100% 200%;filter:drop-shadow(0 2px 1px rgba(0,0,0,.6));
   }
   h1.title::after{ /* fény-csík */
-    content:"VENOM";position:absolute;inset:0;
+    content:"VENOM";
+    content:"VENOM" / ""; /* üres alternatív szöveg: a felolvasó nem mondja duplán a címet */
+    position:absolute;inset:0;
     background:linear-gradient(105deg,transparent 38%,rgba(196,248,250,.9) 50%,transparent 62%);
     -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
     background-size:250% 100%;background-position:180% 0; /* alap: a fény-csík a képen kívül */
@@ -260,11 +267,11 @@
   #bemutatkozas{position:relative;overflow:hidden;}
   #bemutatkozas .wrap{position:relative;z-index:1;}
 
-  /* foglalás-pecsét: valódi babérág + logó-klaszter */
-  .seal{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:14px;}
-  .seal .laurel{height:76px;width:auto;flex:0 0 auto;}
+  /* foglalás-pecsét: valódi babérág + logó-klaszter (kis kijelzőn arányosan zsugorodik) */
+  .seal{display:flex;align-items:center;justify-content:center;gap:clamp(6px,2.2vw,12px);margin-bottom:14px;}
+  .seal .laurel{height:clamp(44px,13vw,76px);width:auto;flex:0 0 auto;}
   .seal .laurel.r{transform:scaleX(-1);}
-  .seal .crest{height:64px;width:auto;flex:0 0 auto;filter:drop-shadow(0 0 15px rgba(47,208,208,.28));}
+  .seal .crest{height:clamp(40px,12vw,64px);width:auto;flex:0 0 auto;filter:drop-shadow(0 0 15px rgba(47,208,208,.28));}
 
   /* arany „— BARBERSHOP —" flourish a logóból (foglalás alá) */
   .flourish{display:block;height:26px;width:auto;margin:30px auto 0;opacity:.9;}
@@ -370,7 +377,7 @@
   footer{background:#040507;border-top:1px solid var(--line);padding:64px 0 34px;}
   .foot-grid{display:grid;gap:32px;margin-bottom:44px;}
   @media(min-width:760px){.foot-grid{grid-template-columns:1.4fr 1fr 1fr;}}
-  .foot h4{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:var(--venom);margin-bottom:14px;}
+  .foot h3{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:var(--venom);margin-bottom:14px;}
   .foot p,.foot a{color:var(--text-dim);font-size:15px;text-decoration:none;}
   .foot a:hover{color:var(--venom);}
   .foot .fbrand{font-family:'Anton',sans-serif;font-size:28px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;line-height:1;}
@@ -395,10 +402,16 @@
     .mobile-cta{
       display:block;position:fixed;left:0;right:0;bottom:0;z-index:70;
       padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px)); /* a ráadás csak SÖTÉT lehet */
+      padding-left:max(10px,env(safe-area-inset-left,0px));
+      padding-right:max(10px,env(safe-area-inset-right,0px));
       background:rgba(5,6,9,.97);border-top:1px solid var(--line);
-      transform:translateY(100%);transition:transform .32s cubic-bezier(.22,.9,.3,1);
+      visibility:hidden;  /* rejtve fókuszt se kaphasson */
+      transform:translateY(100%);
+      transition:transform .32s cubic-bezier(.22,.9,.3,1), visibility 0s linear .32s;
     }
-    .mobile-cta.show{transform:none;} /* csak akkor úszik be, ha se a hero, se a foglalás gombja nem látszik */
+    .mobile-cta.show{transform:none;visibility:visible;
+      transition:transform .32s cubic-bezier(.22,.9,.3,1);} /* csak akkor úszik be, ha se a hero, se a foglalás gombja nem látszik */
+    footer{padding-bottom:calc(34px + var(--cta-h) + env(safe-area-inset-bottom,0px));} /* a CTA ne takarja a © sort */
     .mobile-cta a{
       display:flex;height:44px;align-items:center;justify-content:center;text-decoration:none;
       border-radius:10px;background:var(--venom);color:#0A1200;
@@ -411,6 +424,7 @@
     .subbrand{letter-spacing:.18em;gap:10px;}
     .subbrand::before,.subbrand::after{width:18px;}
     .kicker{letter-spacing:.34em;}
+    .book-box{padding:44px 18px;}
   }
   @media(max-height:700px){ /* alacsony kijelzőn a CTA is férjen a hajtás fölé */
     .hero{padding-top:70px;}
@@ -437,13 +451,14 @@
     .lightbox,.lb-img,.slot .zoom-cue{transition:none;}
     .lb-img{transform:none;}
     .mobile-cta{transition:none;}
-    .hero-glow,.ticker-track,h1.title::after,.hero .venom-face{animation:none;}
+    .hero>.hero-glow,.ticker-track,h1.title::after,.hero .venom-face{animation:none;}
     .slot img{transition:none;}
     .card:hover{transform:none;}
     .slot:hover img{transform:none;}
     .btn-venom:hover{transform:none;}
   }
 </style>
+<noscript><style>.rev{opacity:1;transform:none;}</style></noscript>
 </head>
 <body>
 <a class="skip-link" href="#tartalom">Ugrás a tartalomra</a>
@@ -457,7 +472,7 @@
     <a href="#arlista">Árlista</a>
   </nav>
   <a class="brand" href="#" aria-label="Vissza a tetejére — VENOM Barbershop">
-    <img src="images/logo.png" alt="">
+    <img src="images/logo.png" alt="" width="640" height="640">
   </a>
   <nav class="topnav nav-r" aria-label="Menü (jobb)">
     <a href="#galeria">Galéria</a>
@@ -466,7 +481,7 @@
   <button class="nav-toggle" aria-expanded="false" aria-label="Menü" aria-controls="mobil-menu">
     <span></span><span></span><span></span>
   </button>
-  <nav class="mobile-nav" id="mobil-menu">
+  <nav class="mobile-nav" id="mobil-menu" aria-label="Menü (mobil)">
     <a href="#bemutatkozas">Bemutatkozás</a>
     <a href="#arlista">Árlista</a>
     <a href="#galeria">Galéria</a>
@@ -478,11 +493,11 @@
 <!-- ================= HERO ================= -->
 <section class="hero">
   <div class="hero-glow" aria-hidden="true"></div>
-  <img class="venom-face" src="images/venom-poster.png" alt="" aria-hidden="true">
+  <img class="venom-face" src="images/venom-poster.png" alt="" aria-hidden="true" width="390" height="428">
   <div class="emblem">
-    <img src="images/logo.png" alt="VENOM Barbershop embléma">
+    <img src="images/logo.png" alt="VENOM Barbershop embléma" width="640" height="640">
   </div>
-  <div class="kicker">We are</div>
+  <div class="kicker" lang="en">We are</div>
   <h1 class="title" data-text="VENOM">VENOM</h1>
   <div class="subbrand">Barbershop · Szeged</div>
   <p class="hero-sub"><b>Ahol a részletek alkotják a stílust.</b></p>
@@ -507,7 +522,7 @@
     <div style="text-align:center">
       <div class="orn" aria-hidden="true">
         <span class="orn-rule"></span>
-        <img class="orn-mark" src="images/motif-tools.png" alt="">
+        <img class="orn-mark" src="images/motif-tools.png" alt="" width="341" height="156" loading="lazy">
         <span class="orn-rule flip"></span>
       </div>
       <div class="eyebrow">Szolgáltatások</div>
@@ -549,12 +564,12 @@
 
 <!-- ================= BEMUTATKOZÁS ================= -->
 <section id="bemutatkozas">
-  <div class="wm" aria-hidden="true"><img src="images/motif-tools.png" alt=""></div>
+  <div class="wm" aria-hidden="true"><img src="images/motif-tools.png" alt="" width="341" height="156" loading="lazy"></div>
   <div class="wrap">
     <div style="text-align:center">
       <div class="orn" aria-hidden="true">
         <span class="orn-rule"></span>
-        <img class="orn-mark" src="images/motif-tools.png" alt="">
+        <img class="orn-mark" src="images/motif-tools.png" alt="" width="341" height="156" loading="lazy">
         <span class="orn-rule flip"></span>
       </div>
       <div class="eyebrow">Bemutatkozás</div>
@@ -592,19 +607,19 @@
     <div class="g-head rev">
       <div class="orn" aria-hidden="true">
         <span class="orn-rule"></span>
-        <img class="orn-mark" src="images/motif-tools.png" alt="">
+        <img class="orn-mark" src="images/motif-tools.png" alt="" width="341" height="156" loading="lazy">
         <span class="orn-rule flip"></span>
       </div>
       <div class="eyebrow">Galéria</div>
       <h2>Friss munkák</h2>
     </div>
     <div class="galeria rev">
-      <button type="button" class="slot" data-label="Munka · 1" aria-label="1. munka megnyitása nagyban"><img src="images/kep-1.jpg" alt="Fodrász munka 1" loading="lazy"></button>
-      <button type="button" class="slot" data-label="Munka · 2" aria-label="2. munka megnyitása nagyban"><img src="images/kep-2.jpg" alt="Fodrász munka 2" loading="lazy"></button>
-      <button type="button" class="slot" data-label="Munka · 3" aria-label="3. munka megnyitása nagyban"><img src="images/kep-3.jpg" alt="Fodrász munka 3" loading="lazy"></button>
-      <button type="button" class="slot" data-label="Munka · 4" aria-label="4. munka megnyitása nagyban"><img src="images/kep-4.jpg" alt="Fodrász munka 4" loading="lazy"></button>
-      <button type="button" class="slot" data-label="Munka · 5" aria-label="5. munka megnyitása nagyban"><img src="images/kep-5.jpg" alt="Fodrász munka 5" loading="lazy"></button>
-      <button type="button" class="slot" data-label="Munka · 6" aria-label="6. munka megnyitása nagyban"><img src="images/kep-6.jpg" alt="Fodrász munka 6" loading="lazy"></button>
+      <button type="button" class="slot" data-label="Munka · 1" aria-label="1. munka megnyitása nagyban"><img src="images/kep-1.jpg" alt="Fodrász munka 1" width="1000" height="1000" loading="lazy"></button>
+      <button type="button" class="slot" data-label="Munka · 2" aria-label="2. munka megnyitása nagyban"><img src="images/kep-2.jpg" alt="Fodrász munka 2" width="1000" height="1000" loading="lazy"></button>
+      <button type="button" class="slot" data-label="Munka · 3" aria-label="3. munka megnyitása nagyban"><img src="images/kep-3.jpg" alt="Fodrász munka 3" width="1000" height="1000" loading="lazy"></button>
+      <button type="button" class="slot" data-label="Munka · 4" aria-label="4. munka megnyitása nagyban"><img src="images/kep-4.jpg" alt="Fodrász munka 4" width="1000" height="1000" loading="lazy"></button>
+      <button type="button" class="slot" data-label="Munka · 5" aria-label="5. munka megnyitása nagyban"><img src="images/kep-5.jpg" alt="Fodrász munka 5" width="1000" height="1000" loading="lazy"></button>
+      <button type="button" class="slot" data-label="Munka · 6" aria-label="6. munka megnyitása nagyban"><img src="images/kep-6.jpg" alt="Fodrász munka 6" width="1000" height="1000" loading="lazy"></button>
     </div>
     <p class="g-hint" aria-hidden="true">Kattints a képre a nagyításhoz</p>
   </div>
@@ -615,16 +630,16 @@
   <div class="wrap">
     <div class="book-box rev">
       <div class="seal" aria-hidden="true">
-        <img class="laurel" src="images/motif-laurel.png" alt="">
-        <img class="crest" src="images/motif-tools.png" alt="">
-        <img class="laurel r" src="images/motif-laurel.png" alt="">
+        <img class="laurel" src="images/motif-laurel.png" alt="" width="114" height="82" loading="lazy">
+        <img class="crest" src="images/motif-tools.png" alt="" width="341" height="156" loading="lazy">
+        <img class="laurel r" src="images/motif-laurel.png" alt="" width="114" height="82" loading="lazy">
       </div>
       <div class="eyebrow">Időpontfoglalás</div>
       <h2>Foglalj időpontot</h2>
-      <p>Az online időpontfoglaló hamarosan itt lesz elérhető.</p>
+      <p>Az online időpontfoglaló hamarosan itt lesz elérhető — addig írj e-mailt.</p>
       <!-- élesítéskor: ide kerül a foglaló-rendszer (pl. Salonic) linkje/widgetje -->
-      <a class="btn btn-venom" href="#foglalas">Foglalj időpontot</a>
-      <img class="flourish" src="images/motif-flourish.png" alt="" aria-hidden="true">
+      <a class="btn btn-venom" href="mailto:venombarbershop@gmail.com?subject=Id%C5%91pontfoglal%C3%A1s%20%E2%80%94%20VENOM%20Barbershop">Foglalj időpontot</a>
+      <img class="flourish" src="images/motif-flourish.png" alt="" aria-hidden="true" width="298" height="33" loading="lazy">
     </div>
   </div>
 </section>
@@ -639,14 +654,14 @@
         <div class="fbrand-sub">Barbershop · Szeged</div>
       </div>
       <div class="foot">
-        <h4>Elérhetőség</h4>
+        <h3>Elérhetőség</h3>
         <p>6723 Szeged, Római krt. 34.<br>
            <a href="mailto:venombarbershop@gmail.com">venombarbershop@gmail.com</a><br>
            Instagram: hamarosan<br>
            Facebook: hamarosan</p>
       </div>
       <div class="foot">
-        <h4>Nyitvatartás</h4>
+        <h3>Nyitvatartás</h3>
         <p>Időpontfoglalás alapján</p>
       </div>
     </div>
@@ -664,7 +679,7 @@
   <button type="button" class="lb-nav lb-prev" aria-label="Előző kép">&#8249;</button>
   <figure class="lb-stage">
     <img class="lb-img" src="" alt="">
-    <figcaption class="lb-counter"></figcaption>
+    <figcaption class="lb-counter" aria-live="polite" aria-atomic="true"></figcaption>
   </figure>
   <button type="button" class="lb-nav lb-next" aria-label="Következő kép">&#8250;</button>
 </div>
@@ -677,12 +692,18 @@
     if(location.hash){ history.replaceState(null,'',location.pathname+location.search); }
     window.scrollTo(0,0);
   })();
-  window.addEventListener('load',function(){ window.scrollTo(0,0); });
 
   document.querySelectorAll('.slot img, .emblem img').forEach(img=>{
     const holder=img.closest('.slot')||img.closest('.emblem');
-    img.addEventListener('error',()=>holder.classList.add('empty'));
-    if(img.complete && img.naturalWidth===0) holder.classList.add('empty');
+    function kiesett(){
+      holder.classList.add('empty');
+      if(holder.matches('.slot')){          // hibás galéria-csempe: ne legyen kattintható
+        holder.disabled=true;
+        const cue=holder.querySelector('.zoom-cue'); if(cue) cue.remove();
+      }
+    }
+    img.addEventListener('error',kiesett);
+    if(img.complete && img.naturalWidth===0) kiesett();
   });
   const io=new IntersectionObserver(es=>es.forEach(e=>{
     if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}
@@ -754,25 +775,29 @@
     const slots=Array.from(document.querySelectorAll('.galeria .slot'));
     if(!slots.length) return;
 
-    // adatok + nagyító-jel injektálás
+    // nagyító-jel injektálás (a képlista mindig nyitáskor épül — így a később elhibázott
+    // lazy-képek nem kerülhetnek bele)
     const zoomSVG='<span class="zoom-cue" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M21 21l-5-5M10.5 8v5M8 10.5h5"/></svg></span>';
-    const items=[];
     slots.forEach(slot=>{
       const img=slot.querySelector('img');
       if(slot.classList.contains('empty')||!img){slot.setAttribute('tabindex','-1');return;}
-      items.push({src:img.getAttribute('src'), alt:img.getAttribute('alt')||''});
       slot.insertAdjacentHTML('beforeend', zoomSVG);
     });
-    if(!items.length) return;
+    const elo=()=>slots.filter(s=>!s.classList.contains('empty')&&s.querySelector('img'));
 
-    let cur=0, lastFocus=null;
+    let items=[], cur=0, lastFocus=null, hideT=null;
     function render(){
       const it=items[cur];
       lbImg.src=it.src; lbImg.alt=it.alt;
       lbCounter.textContent=(cur+1)+' / '+items.length;
     }
-    function open(i){
-      cur=i; lastFocus=document.activeElement; render();
+    function open(slot){
+      const jok=elo();
+      items=jok.map(s=>{const i=s.querySelector('img');return {src:i.getAttribute('src'), alt:i.getAttribute('alt')||''};});
+      if(!items.length) return;
+      cur=Math.max(0, jok.indexOf(slot));
+      clearTimeout(hideT);          // ha épp záródna, ne rejtse el az újranyitottat
+      lastFocus=document.activeElement; render();
       lb.hidden=false; document.body.classList.add('lb-lock');
       void lb.offsetWidth;          // reflow: a fade-in akkor is elindul, ha a fül épp háttérben van
       lb.classList.add('open');
@@ -780,16 +805,17 @@
     }
     function close(){
       lb.classList.remove('open'); document.body.classList.remove('lb-lock');
-      setTimeout(()=>{lb.hidden=true;}, 260);
+      clearTimeout(hideT);
+      hideT=setTimeout(()=>{lb.hidden=true;}, 260);
       if(lastFocus&&lastFocus.focus) lastFocus.focus();
     }
     const go=d=>{cur=(cur+d+items.length)%items.length; render();};
 
-    let idx=0;
     slots.forEach(slot=>{
-      if(slot.classList.contains('empty')||!slot.querySelector('img')) return;
-      const my=idx++;
-      slot.addEventListener('click',()=>open(my));
+      slot.addEventListener('click',()=>{
+        if(slot.classList.contains('empty')) return;
+        open(slot);
+      });
     });
     btnClose.addEventListener('click',close);
     btnPrev.addEventListener('click',()=>go(-1));
@@ -800,6 +826,13 @@
       if(e.key==='Escape') close();
       else if(e.key==='ArrowLeft') go(-1);
       else if(e.key==='ArrowRight') go(1);
+      else if(e.key==='Tab'){       // fókusz-csapda: a Tab a lightbox 3 gombja közt köröz
+        const kor=[btnClose,btnPrev,btnNext];
+        const i=kor.indexOf(document.activeElement);
+        e.preventDefault();
+        const kov=e.shiftKey ? (i<=0?kor.length-1:i-1) : (i===-1||i===kor.length-1?0:i+1);
+        kor[kov].focus();
+      }
     });
     // egyszerű swipe mobilra
     let sx=null;
@@ -824,21 +857,28 @@
     });
   });
 
-  /* Végtelenített futószalag: kitöltés a képernyő szélességéig + varrásmentes hurok */
+  /* Végtelenített futószalag: kitöltés a képernyő szélességéig + varrásmentes hurok.
+     A méretezés a betűtípus betöltése UTÁN fut, és ablakméret-váltásra újraépül. */
   (function(){
     const track=document.querySelector('.ticker-track');
     const seq=track&&track.querySelector('.ticker-seq');
     if(!seq) return;
     const base=Array.from(seq.children).map(n=>n.cloneNode(true));
-    let guard=0;
-    while(seq.scrollWidth < window.innerWidth + 240 && guard<60){
-      base.forEach(n=>seq.appendChild(n.cloneNode(true)));
-      guard++;
+    function build(){
+      track.querySelectorAll('.ticker-seq').forEach((s,i)=>{ if(i>0) s.remove(); }); // régi klón-szakasz ki
+      seq.innerHTML=''; base.forEach(n=>seq.appendChild(n.cloneNode(true)));
+      let guard=0;
+      while(seq.scrollWidth < window.innerWidth + 240 && guard<60){
+        base.forEach(n=>seq.appendChild(n.cloneNode(true)));
+        guard++;
+      }
+      const clone=seq.cloneNode(true);        // második, azonos szakasz → a hurok varrásmentes
+      clone.setAttribute('aria-hidden','true');
+      track.appendChild(clone);
+      track.style.animationDuration=(seq.scrollWidth/90)+'s'; // állandó ~90 px/mp sebesség
     }
-    const clone=seq.cloneNode(true);          // második, azonos szakasz → a hurok varrásmentes
-    clone.setAttribute('aria-hidden','true');
-    track.appendChild(clone);
-    track.style.animationDuration=(seq.scrollWidth/90)+'s';  // állandó ~90 px/mp sebesség
+    if(document.fonts&&document.fonts.ready){ document.fonts.ready.then(build); } else { build(); }
+    let rT; window.addEventListener('resize',function(){ clearTimeout(rT); rT=setTimeout(build,300); });
   })();
 </script>
 </body>
