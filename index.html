@@ -196,7 +196,7 @@
     -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
     background-size:250% 100%;background-position:180% 0; /* alap: a fény-csík a képen kívül */
   }
-  h1.title.shine::after{animation:shine 1.5s cubic-bezier(.3,.7,.4,1) both;} /* egy csillanás betöltéskor + minden visszatéréskor */
+  h1.title.shine::after{animation:shine 2.2s cubic-bezier(.32,.62,.4,1) both;} /* egy lassú csillanás betöltéskor + minden visszatéréskor */
   @keyframes shine{from{background-position:180% 0;}to{background-position:-80% 0;}}
   .subbrand{
     display:inline-flex;align-items:center;gap:18px;margin:18px 0 26px;
@@ -699,13 +699,12 @@
     },{rootMargin:'-80px 0px 0px 0px'}).observe(bigLogo);
   })();
 
-  /* Hero-effektek újrajátszása: valahányszor visszatérsz a tetejére, újravillan az arc
-     ÉS végigfut a fém-csillanás a VENOM feliraton (betöltéskor + minden visszatéréskor). */
+  /* Hero-effektek: az arc-villanás ÉS a felirat fém-csillanása CSAK akkor indul (együtt),
+     ha teljesen a tetejére görgettél. Scroll-alapú, hogy oda-vissza is megbízhatóan működjön. */
   (function(){
     const face=document.querySelector('.venom-face');
     const title=document.querySelector('.hero .title');
-    const hero=document.querySelector('.hero');
-    if(!hero) return;
+    if(!face&&!title) return;
     const reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
     function faceReplay(){
       if(!face||reduce.matches) return;
@@ -715,13 +714,13 @@
       if(!title||reduce.matches) return;
       title.classList.remove('shine'); void title.offsetWidth; title.classList.add('shine');
     }
-    shine();                              // kezdeti csillanás (az arcot betöltéskor a CSS intézi)
-    let first=true;
-    new IntersectionObserver(function(es){
-      const visible=es[es.length-1].isIntersecting;
-      if(first){ first=false; return; }   // a betöltéskori arc-villanást a CSS intézi
-      if(visible){ faceReplay(); shine(); }
-    },{threshold:.4}).observe(hero);
+    shine();                       // kezdeti csillanás (az arcot betöltéskor a CSS intézi)
+    let wasAway=false;             // elmentél-e a tetejéről, mióta legutóbb ott voltál
+    window.addEventListener('scroll',function(){
+      const y=window.scrollY||document.documentElement.scrollTop||0;
+      if(y>100){ wasAway=true; }
+      else if(y<=2 && wasAway){ wasAway=false; faceReplay(); shine(); } // teljesen a tetőn, friss visszatérés
+    },{passive:true});
   })();
 
   /* Ragadós mobil CTA: csak akkor látszik, ha SE a hero gomb, SE a foglalás-szekció gombja
