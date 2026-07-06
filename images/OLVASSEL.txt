@@ -1,0 +1,4 @@
+Ide másold a képeket ezekkel a nevekkel:
+  logo.png     – barber embléma
+  uzlet.jpg    – fotó az üzletről
+  kep-1.jpg … kep-6.jpg – munkák fotói
