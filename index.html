@@ -33,7 +33,7 @@
     --teal-glow:rgba(47,208,208,.45);
     --text:#C3C9D2;
     --text-dim:rgba(195,201,210,.72);
-    --cta-h:54px;           /* ragadós mobil CTA-sáv magassága */
+    --cta-h:46px;           /* ragadós mobil CTA-sáv magassága */
     --bar-h:75px;           /* rögzített fejléc magassága */
   }
   *{box-sizing:border-box;margin:0;padding:0;}
@@ -390,21 +390,21 @@
     .grain{mix-blend-mode:normal;opacity:.05;} /* mobilon a blend-mód GPU-terhét elhagyjuk */
     .mobile-cta{
       display:flex;position:fixed;left:0;right:0;bottom:0;z-index:65;
-      min-height:var(--cta-h);padding-bottom:env(safe-area-inset-bottom);
+      min-height:var(--cta-h);padding-bottom:min(env(safe-area-inset-bottom,0px),12px);
       background:var(--panel);border-top:1px solid rgba(158,240,26,.3);
       box-shadow:0 -8px 24px rgba(0,0,0,.5);
       transform:translateY(120%);transition:transform .32s cubic-bezier(.22,.9,.3,1);
     }
     .mobile-cta.show{transform:none;} /* csak akkor úszik be, ha a hero gomb kigördült */
     .mobile-cta a{
-      flex:1;text-align:center;padding:12px 8px;text-decoration:none;
+      flex:1;text-align:center;padding:9px 8px;text-decoration:none;
       display:flex;align-items:center;justify-content:center;
-      font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;
+      font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14.5px;
       letter-spacing:.1em;text-transform:uppercase;
     }
     .mobile-cta .m-ghost{background:var(--panel);color:var(--chrome-hi);border-right:1px solid var(--line);}
     .mobile-cta .m-primary{background:var(--venom);color:#0A1200;}
-    body{padding-bottom:calc(var(--cta-h) + env(safe-area-inset-bottom));}
+    body{padding-bottom:calc(var(--cta-h) + min(env(safe-area-inset-bottom,0px),12px));}
   }
   @media(max-width:480px){
     .subbrand{letter-spacing:.18em;gap:10px;}
