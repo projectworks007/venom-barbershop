@@ -744,22 +744,29 @@
     },{passive:true});
   })();
 
-  /* Ragadós mobil CTA: csak akkor látszik, ha SE a hero gomb, SE a foglalás-szekció gombja
-     nincs a képen (két valódi „Foglalj időpontot" gomb közé nem kell a ragadós sáv). */
+  /* Ragadós mobil CTA: csak a hero gomb és a foglalás-szekció KÖZÖTT látszik.
+     Ha a foglalás gombja a képen van, VAGY már elgörgettél alá (lábléc), nem jelenik meg. */
   (function(){
     const cta=document.querySelector('.mobile-cta');
     const heroCtas=document.querySelector('.hero .ctas');
     const bookBtn=document.querySelector('.book-box .btn-venom');
     if(!cta||!heroCtas) return;
-    let heroVisible=true, bookVisible=false;
-    const update=()=>cta.classList.toggle('show', !heroVisible && !bookVisible);
+    let heroVisible=true, bookVisible=false, bookPassed=false;
+    const update=()=>cta.classList.toggle('show', !heroVisible && !bookVisible && !bookPassed);
     new IntersectionObserver(function(es){
       heroVisible=es[es.length-1].isIntersecting; update();
     },{rootMargin:'0px 0px -10px 0px'}).observe(heroCtas);
     if(bookBtn){
-      new IntersectionObserver(function(es){
-        bookVisible=es[es.length-1].isIntersecting; update();
-      },{rootMargin:'0px 0px -10px 0px'}).observe(bookBtn);
+      // görgetésenként friss pozíció — ugrásnál (menü, vissza-gomb) is pontos
+      const chk=function(){
+        const r=bookBtn.getBoundingClientRect();
+        bookVisible = r.top < innerHeight-10 && r.bottom > 0;
+        bookPassed  = r.bottom <= 0;   // a gomb már a képernyő FELETT van → lábléc-zóna
+        update();
+      };
+      chk();
+      window.addEventListener('scroll', chk, {passive:true});
+      window.addEventListener('resize', chk);
     }
   })();
 
