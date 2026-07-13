@@ -26,11 +26,11 @@
     --chrome-hi:#F2F5F8;    /* fényes króm */
     --chrome:#AEB6C0;       /* króm */
     --chrome-lo:#5C636E;    /* tompa fém */
-    --venom:#9EF01A;        /* mérgező zöld — brand-akcens */
-    --venom-2:#69C400;
-    --venom-glow:rgba(158,240,26,.55);
-    --teal:#2FD0D0;         /* hideg symbiota-teal — mozis atmoszféra */
-    --teal-glow:rgba(47,208,208,.45);
+    --venom:#E11423;        /* vérpiros — brand-akcens (volt: mérgező zöld) */
+    --venom-2:#9E0C16;
+    --venom-glow:rgba(225,20,35,.55);
+    --teal:#A81222;         /* mély vérpiros — mozis atmoszféra (volt: hideg teal) */
+    --teal-glow:rgba(168,18,34,.45);
     --text:#C3C9D2;
     --text-dim:rgba(195,201,210,.72);
     --cta-h:61px;           /* ragadós mobil CTA-tálca magassága (8+44+8 + szegély) */
@@ -49,8 +49,8 @@
   .bg-fx{
     position:fixed;inset:0;z-index:-1;pointer-events:none;
     background:
-      radial-gradient(58% 46% at 20% 14%, rgba(31,96,104,.52), transparent 62%),
-      radial-gradient(54% 46% at 84% 76%, rgba(24,78,86,.46), transparent 64%);
+      radial-gradient(58% 46% at 20% 14%, rgba(104,30,34,.52), transparent 62%),
+      radial-gradient(54% 46% at 84% 76%, rgba(86,26,28,.46), transparent 64%);
   }
   /* finom grain + vignetta az egész oldalon */
   body::after{
@@ -91,12 +91,12 @@
   .brand.show{opacity:1;visibility:visible;transform:none;
     transition:opacity .35s ease,transform .35s ease;}
   .brand img{height:64px;width:auto;margin:-6px 0;position:relative;z-index:1;
-    filter:drop-shadow(0 0 12px rgba(47,208,208,.45));} /* medálként kissé túllóg a sávon, a fejléc nem hízik */
+    filter:drop-shadow(0 0 12px rgba(168,18,34,.45));} /* medálként kissé túllóg a sávon, a fejléc nem hízik */
   /* szimbióta-aura: lélegző zöld-teal fényudvar az embléma körül */
   .brand::before{
     content:"";position:absolute;left:50%;top:50%;width:92px;height:92px;
     transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;
-    background:radial-gradient(circle, rgba(47,208,208,.55), rgba(158,240,26,.20) 52%, transparent 72%);
+    background:radial-gradient(circle, rgba(168,18,34,.55), rgba(225,20,35,.20) 52%, transparent 72%);
     animation:brandPulse 2.8s ease-in-out infinite;
   }
   @keyframes brandPulse{
@@ -156,8 +156,8 @@
     position:absolute;left:50%;top:34%;transform:translate(-50%,-50%);
     width:min(900px,120vw);height:min(900px,120vw);z-index:0;pointer-events:none;
     background:
-      radial-gradient(circle, rgba(158,240,26,.11) 0%, transparent 24%),
-      radial-gradient(circle, rgba(47,208,208,.30) 0%, rgba(47,208,208,.10) 42%, transparent 68%);
+      radial-gradient(circle, rgba(225,20,35,.11) 0%, transparent 24%),
+      radial-gradient(circle, rgba(168,18,34,.30) 0%, rgba(168,18,34,.10) 42%, transparent 68%);
     animation:pulse 5.5s ease-in-out infinite;
   }
   @keyframes pulse{0%,100%{opacity:.75;transform:translate(-50%,-50%) scale(1);}50%{opacity:1;transform:translate(-50%,-50%) scale(1.08);}}
@@ -176,7 +176,7 @@
   .hero .venom-face.flash{animation:venomFlash 2.4s ease-in-out both;}
   .hero > *{position:relative;z-index:2;}
   .emblem{width:clamp(190px,32vw,290px);height:clamp(190px,32vw,290px);margin:0 auto 16px;position:relative;}
-  .emblem img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 0 34px rgba(47,208,208,.48)) drop-shadow(0 0 12px rgba(158,240,26,.12));}
+  .emblem img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 0 34px rgba(168,18,34,.48)) drop-shadow(0 0 12px rgba(225,20,35,.12));}
   .emblem.empty img{display:none;}
   .emblem.empty::before{
     content:"V";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
@@ -184,9 +184,12 @@
     border:2px solid var(--chrome-lo);border-radius:50%;
   }
   .kicker{
-    font-family:'Barlow Condensed',sans-serif;font-weight:600;
-    font-size:14px;letter-spacing:.5em;text-transform:uppercase;
-    color:var(--venom);margin-bottom:14px;padding-left:.5em;
+    font-family:'Barlow Condensed',sans-serif;font-weight:700;
+    font-size:15px;letter-spacing:.5em;text-transform:uppercase;
+    color:#FF3542;margin-bottom:14px;padding-left:.5em;
+    /* SÖTÉT halo elemeli a világos vérpiros betűt a mozgalmas piros háttérből;
+       a széles, halvány piros izzás csak a márka-hangulatért (nem rontja az olvashatóságot) */
+    text-shadow:0 0 2px rgba(0,0,0,.98), 0 0 5px rgba(0,0,0,.92), 0 1px 6px rgba(0,0,0,.85), 0 0 22px rgba(255,53,66,.4);
   }
   h1.title{
     font-family:'Anton',sans-serif;font-size:clamp(58px,17vw,190px);
@@ -199,7 +202,7 @@
     content:"VENOM";
     content:"VENOM" / ""; /* üres alternatív szöveg: a felolvasó nem mondja duplán a címet */
     position:absolute;inset:0;
-    background:linear-gradient(105deg,transparent 38%,rgba(196,248,250,.9) 50%,transparent 62%);
+    background:linear-gradient(105deg,transparent 38%,rgba(255,220,222,.9) 50%,transparent 62%);
     -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
     background-size:250% 100%;background-position:180% 0; /* alap: a fény-csík a képen kívül */
   }
@@ -219,7 +222,7 @@
     font-size:16px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
     padding:16px 34px;transition:all .22s;border:1px solid transparent;
   }
-  .btn-venom{background:var(--venom);color:#0A1200;box-shadow:0 0 0 rgba(158,240,26,0);}
+  .btn-venom{background:var(--venom);color:#fff;box-shadow:0 0 0 rgba(225,20,35,0);}
   .btn-venom:hover{box-shadow:0 0 26px var(--venom-glow);transform:translateY(-1px);}
   .btn-ghost{border-color:var(--chrome-lo);color:var(--chrome-hi);}
   .btn-ghost:hover{border-color:var(--venom);color:var(--venom);}
@@ -271,7 +274,7 @@
   .seal{display:flex;align-items:center;justify-content:center;gap:clamp(6px,2.2vw,12px);margin-bottom:14px;}
   .seal .laurel{height:clamp(44px,13vw,76px);width:auto;flex:0 0 auto;}
   .seal .laurel.r{transform:scaleX(-1);}
-  .seal .crest{height:clamp(40px,12vw,64px);width:auto;flex:0 0 auto;filter:drop-shadow(0 0 15px rgba(47,208,208,.28));}
+  .seal .crest{height:clamp(40px,12vw,64px);width:auto;flex:0 0 auto;filter:drop-shadow(0 0 15px rgba(168,18,34,.28));}
 
   /* arany „— BARBERSHOP —" flourish a logóból (foglalás alá) */
   .flourish{display:block;height:26px;width:auto;margin:30px auto 0;opacity:.9;}
@@ -284,7 +287,7 @@
     border:1px solid var(--line);border-radius:4px;padding:44px 32px 36px;position:relative;
     box-shadow:inset 0 1px 0 rgba(255,255,255,.05), 0 24px 60px rgba(0,0,0,.5);
   }
-  .board::before{content:"";position:absolute;inset:8px;border:1px solid rgba(158,240,26,.14);border-radius:2px;pointer-events:none;}
+  .board::before{content:"";position:absolute;inset:8px;border:1px solid rgba(225,20,35,.14);border-radius:2px;pointer-events:none;}
   .tetel{display:flex;align-items:baseline;gap:12px;padding:15px 6px;}
   .tetel + .tetel{border-top:1px solid var(--line);}
   .tetel .nev{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:21px;color:var(--chrome-hi);letter-spacing:.02em;}
@@ -302,7 +305,7 @@
     background:linear-gradient(170deg,var(--panel-2),var(--panel));position:relative;overflow:hidden;
     transition:border-color .25s,transform .25s;
   }
-  .card:hover{border-color:rgba(158,240,26,.4);transform:translateY(-3px);}
+  .card:hover{border-color:rgba(225,20,35,.4);transform:translateY(-3px);}
   .card .num{font-family:'Anton',sans-serif;font-size:15px;color:var(--venom);letter-spacing:.2em;}
   .card h3{font-family:'Anton',sans-serif;font-weight:400;text-transform:uppercase;font-size:24px;color:var(--chrome-hi);margin:8px 0 10px;letter-spacing:.02em;}
   .card p{color:var(--text-dim);font-size:15px;}
@@ -322,7 +325,7 @@
   /* nagyító-jel a jobb felső sarokban — jelzi, hogy kattintható */
   .slot .zoom-cue{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;
     display:flex;align-items:center;justify-content:center;pointer-events:none;
-    background:rgba(5,6,9,.62);border:1px solid rgba(158,240,26,.4);color:var(--venom);
+    background:rgba(5,6,9,.62);border:1px solid rgba(225,20,35,.4);color:var(--venom);
     opacity:0;transform:scale(.8);transition:opacity .25s,transform .25s;}
   .slot:hover .zoom-cue,.slot:focus-visible .zoom-cue{opacity:1;transform:none;}
   .slot .zoom-cue svg{width:17px;height:17px;}
@@ -342,7 +345,7 @@
   .lb-stage{margin:0;display:flex;flex-direction:column;align-items:center;gap:14px;max-width:100%;max-height:100%;}
   .lb-img{max-width:min(88vw,860px);max-height:82vh;width:auto;height:auto;object-fit:contain;
     border:1px solid rgba(174,182,192,.25);border-radius:4px;
-    box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 40px rgba(47,208,208,.12);
+    box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 40px rgba(168,18,34,.12);
     transform:scale(.96);transition:transform .28s ease;}
   .lightbox.open .lb-img{transform:none;}
   .lb-counter{font-family:'Barlow Condensed',sans-serif;font-size:14px;letter-spacing:.28em;
@@ -368,7 +371,7 @@
   .book-box{
     max-width:640px;margin:0 auto;text-align:center;border:1px solid var(--line);border-radius:4px;
     padding:54px 30px;background:
-      radial-gradient(80% 120% at 50% 0%, rgba(158,240,26,.08), transparent 60%),
+      radial-gradient(80% 120% at 50% 0%, rgba(225,20,35,.08), transparent 60%),
       linear-gradient(170deg,var(--panel-2),var(--void));position:relative;
   }
   .book-box p{color:var(--text-dim);max-width:44ch;margin:0 auto 28px;}
@@ -414,10 +417,10 @@
     footer{padding-bottom:calc(34px + var(--cta-h) + env(safe-area-inset-bottom,0px));} /* a CTA ne takarja a © sort */
     .mobile-cta a{
       display:flex;height:44px;align-items:center;justify-content:center;text-decoration:none;
-      border-radius:10px;background:var(--venom);color:#0A1200;
+      border-radius:10px;background:var(--venom);color:#fff;
       font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15.5px;
       letter-spacing:.14em;text-transform:uppercase;
-      box-shadow:0 4px 16px rgba(158,240,26,.25);
+      box-shadow:0 4px 16px rgba(225,20,35,.25);
     }
   }
   @media(max-width:480px){
@@ -437,7 +440,7 @@
     position:absolute;left:-9999px;top:0;z-index:100;
     font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;
     letter-spacing:.12em;text-transform:uppercase;text-decoration:none;
-    background:var(--venom);color:#0A1200;padding:12px 20px;
+    background:var(--venom);color:#fff;padding:12px 20px;
   }
   .skip-link:focus{position:fixed;left:12px;top:12px;}
 
@@ -511,7 +514,7 @@
 <div class="ticker" aria-hidden="true">
   <div class="ticker-track">
     <div class="ticker-seq">
-      <span>Hajvágás</span><span>Fade</span><span>Szakállformázás</span><span>Borotválás</span><span>Gyerekvágás</span><span>Venom Barbershop</span>
+      <span>Hajvágás</span><span>Fade</span><span>Szakállformázás</span><span>Borotválás</span><span>Gyerek hajvágás</span><span>Venom Barbershop</span>
     </div>
   </div>
 </div>
@@ -530,32 +533,24 @@
     </div>
     <div class="board rev">
       <div class="tetel">
-        <span class="nev">Hajvágás<span class="megj">mosással és szárítással</span></span>
+        <span class="nev">Hajvágás</span>
         <span class="pont"></span><span class="ar">6 000 Ft</span>
       </div>
       <div class="tetel">
-        <span class="nev">Géppel nyírás</span>
-        <span class="pont"></span><span class="ar">4 500 Ft</span>
+        <span class="nev">Szakállvágás</span>
+        <span class="pont"></span><span class="ar">3 000 Ft</span>
       </div>
       <div class="tetel">
-        <span class="nev">Hajvágás + szakáll<span class="megj">a teljes megjelenés</span></span>
+        <span class="nev">Haj/szakáll</span>
         <span class="pont"></span><span class="ar">8 500 Ft</span>
       </div>
       <div class="tetel">
-        <span class="nev">Szakállformázás</span>
-        <span class="pont"></span><span class="ar">4 000 Ft</span>
+        <span class="nev">Gyerek hajvágás (3–7 éves kor között)</span>
+        <span class="pont"></span><span class="ar">5 000 Ft</span>
       </div>
       <div class="tetel">
-        <span class="nev">Borotválás<span class="megj">meleg törölközővel</span></span>
-        <span class="pont"></span><span class="ar">5 500 Ft</span>
-      </div>
-      <div class="tetel">
-        <span class="nev">Gyerek hajvágás (3–7 év)<span class="megj">külön árkategória</span></span>
-        <span class="pont"></span><span class="ar">3 500 Ft</span>
-      </div>
-      <div class="tetel">
-        <span class="nev">Gyerek hajvágás (8–14 év)</span>
-        <span class="pont"></span><span class="ar">4 500 Ft</span>
+        <span class="nev">Gépi hajvágás</span>
+        <span class="pont"></span><span class="ar">5 000 Ft</span>
       </div>
       <p class="board-note">Az árak tájékoztató jellegűek.</p>
     </div>
